@@ -7,12 +7,10 @@ import (
 func TestSetupClientValidArgs(t *testing.T) {
 
 	conn, err := SetupClient("udp", "192.168.48.10:514")
+	defer CloseClient(conn)
 	if err != nil {
 		t.Errorf("SetupClient function didn't return with valid args.")
 	}
-
-	CloseClient(conn)
-
 }
 
 func TestSendRawValidArgs(t *testing.T) {
