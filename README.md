@@ -9,7 +9,7 @@ Acceptable command line flags are:
 * priority - Syslog message priority. Defaults to 5, (Notice).
 * message - Syslog message. Defaults to "Testing, testing, 1, 2, 3".
 
-## Example
+### Example
 ```
 syslog-client>go run . -network="udp" -address="172.16.30.2" -priority=0 -message="Testing the syslog server by sending alert message."
 ```
