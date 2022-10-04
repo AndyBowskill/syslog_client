@@ -7,7 +7,7 @@ Acceptable command line flags are:
 * network - Syslog server udp or tcp. Defaults to "udp".
 * address - Syslog server address IPv4 address. Defaults to "".
 * priority - Syslog message priority. Defaults to 5, (Notice).
-* message - Syslog message. Defaults to "Testing, testing, 1, 2, 3"
+* message - Syslog message. Defaults to "Testing, testing, 1, 2, 3".
 
 ## Example
 ```
