@@ -15,7 +15,7 @@ func TestSetupClientValidArgs(t *testing.T) {
 
 }
 
-func TestSendRaw(t *testing.T) {
+func TestSendRawValidArgs(t *testing.T) {
 
 	conn, _ := SetupClient("udp", "192.168.48.10:514")
 	defer CloseClient(conn)
