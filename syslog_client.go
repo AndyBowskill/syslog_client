@@ -1,16 +1,25 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net"
 )
 
 func main() {
 
-	conn, err := SetupClient("udp", "192.168.48.10:514")
+	networkPtr := flag.String("network", "udp", "syslog server udp or tcp")
+	addressPtr := flag.String("address", "", "syslog server IP address")
+	priorityPtr := flag.Int("priority", 5, "syslog message priority")
+	messagePtr := flag.String("message", "Testing, testing, 1, 2, 3", "syslog message")
+	flag.Parse()
+
+	addressPort := fmt.Sprintf("%s:514", *addressPtr)
+
+	conn, err := SetupClient(*networkPtr, addressPort)
 	defer CloseClient(conn)
 	if err == nil {
-		SendRaw(conn)
+		Send(conn, *priorityPtr, *messagePtr)
 	}
 }
 
@@ -24,9 +33,9 @@ func SetupClient(network, address string) (net.Conn, error) {
 	return conn, nil
 }
 
-func SendRaw(conn net.Conn) error {
+func Send(conn net.Conn, priority int, message string) error {
 
-	_, err := fmt.Fprint(conn, "Testing test 1, 2, 3")
+	_, err := fmt.Fprintf(conn, "<%d> %s", priority, message)
 	if err != nil {
 		return err
 	}
