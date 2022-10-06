@@ -6,6 +6,18 @@ import (
 	"net"
 )
 
+type syslogMessage struct {
+	network     string
+	addressPort string
+	priority    int
+	message     string
+}
+
+func newSyslogMessage(network, addressPort string, priority int, message string) *syslogMessage {
+	syslogMessage := syslogMessage{network: network, addressPort: addressPort, priority: priority, message: message}
+	return &syslogMessage
+}
+
 func main() {
 
 	networkPtr := flag.String("network", "udp", "syslog server udp or tcp")
@@ -17,10 +29,12 @@ func main() {
 	addressPort := AddressPort(*addressPtr)
 	priority := CalculatePriority(*severityPtr)
 
-	conn, err := SetupClient(*networkPtr, addressPort)
+	syslogMessage := newSyslogMessage(*networkPtr, addressPort, priority, *messagePtr)
+
+	conn, err := (*syslogMessage).SetupClient()
 	defer CloseClient(conn)
 	if err == nil {
-		Send(conn, priority, *messagePtr)
+		(*syslogMessage).Send(conn)
 	}
 }
 
@@ -41,9 +55,9 @@ func CalculatePriority(severity int) (priority int) {
 	return priority
 }
 
-func SetupClient(network, address string) (net.Conn, error) {
+func (sm *syslogMessage) SetupClient() (net.Conn, error) {
 
-	conn, err := net.Dial(network, address)
+	conn, err := net.Dial(sm.network, sm.addressPort)
 	if err != nil {
 		return nil, err
 	}
@@ -51,9 +65,9 @@ func SetupClient(network, address string) (net.Conn, error) {
 	return conn, nil
 }
 
-func Send(conn net.Conn, priority int, message string) error {
+func (sm *syslogMessage) Send(conn net.Conn) error {
 
-	_, err := fmt.Fprintf(conn, "<%d> %s", priority, message)
+	_, err := fmt.Fprintf(conn, "<%d> %s", sm.priority, sm.message)
 	if err != nil {
 		return err
 	}
