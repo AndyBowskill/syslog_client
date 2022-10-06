@@ -10,17 +10,35 @@ func main() {
 
 	networkPtr := flag.String("network", "udp", "syslog server udp or tcp")
 	addressPtr := flag.String("address", "", "syslog server IP address")
-	priorityPtr := flag.Int("priority", 5, "syslog message priority")
+	severityPtr := flag.Int("severity", 5, "syslog message severity")
 	messagePtr := flag.String("message", "Testing, testing, 1, 2, 3", "syslog message")
 	flag.Parse()
 
-	addressPort := fmt.Sprintf("%s:514", *addressPtr)
+	addressPort := AddressPort(*addressPtr)
+	priority := CalculatePriority(*severityPtr)
 
 	conn, err := SetupClient(*networkPtr, addressPort)
 	defer CloseClient(conn)
 	if err == nil {
-		Send(conn, *priorityPtr, *messagePtr)
+		Send(conn, priority, *messagePtr)
 	}
+}
+
+func AddressPort(address string) (addressPort string) {
+
+	addressPort = fmt.Sprintf("%s:514", address)
+	return addressPort
+}
+
+func CalculatePriority(severity int) (priority int) {
+
+	if severity > 7 {
+		severity = 7
+	}
+
+	//Priority is user-level facility (1), add 8, then multplied by the severity
+	priority = (8 + severity)
+	return priority
 }
 
 func SetupClient(network, address string) (net.Conn, error) {
