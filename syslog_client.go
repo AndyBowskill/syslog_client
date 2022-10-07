@@ -4,32 +4,37 @@ import (
 	"flag"
 	"fmt"
 	"net"
+	"strings"
 )
 
+const tcp string = "tcp"
+const udp string = "udp"
+
 type syslogMessage struct {
-	network     string
+	protocol    string
 	addressPort string
 	priority    int
 	message     string
 }
 
-func newSyslogMessage(network, addressPort string, priority int, message string) *syslogMessage {
-	syslogMessage := syslogMessage{network: network, addressPort: addressPort, priority: priority, message: message}
+func newSyslogMessage(protocol, addressPort string, priority int, message string) *syslogMessage {
+	syslogMessage := syslogMessage{protocol: protocol, addressPort: addressPort, priority: priority, message: message}
 	return &syslogMessage
 }
 
 func main() {
 
-	networkPtr := flag.String("network", "udp", "syslog server udp or tcp")
+	protocolPtr := flag.String("protocol", udp, "syslog server protocol udp or tcp")
 	addressPtr := flag.String("address", "", "syslog server IP address")
 	severityPtr := flag.Int("severity", 5, "syslog message severity")
 	messagePtr := flag.String("message", "Testing, testing, 1, 2, 3", "syslog message")
 	flag.Parse()
 
-	addressPort := AddressPort(*addressPtr)
+	protocol := SetupProtocol(*protocolPtr)
+	addressPort := SetupAddressPort(*addressPtr)
 	priority := CalculatePriority(*severityPtr)
 
-	syslogMessage := newSyslogMessage(*networkPtr, addressPort, priority, *messagePtr)
+	syslogMessage := newSyslogMessage(protocol, addressPort, priority, *messagePtr)
 
 	conn, err := (*syslogMessage).SetupClient()
 	defer CloseClient(conn)
@@ -38,7 +43,16 @@ func main() {
 	}
 }
 
-func AddressPort(address string) (addressPort string) {
+func SetupProtocol(protocol string) (validProtocol string) {
+
+	if strings.Compare(protocol, tcp) != 0 && strings.Compare(protocol, udp) != 0 {
+		return udp
+	}
+
+	return protocol
+}
+
+func SetupAddressPort(address string) (addressPort string) {
 
 	addressPort = fmt.Sprintf("%s:514", address)
 	return addressPort
@@ -57,7 +71,7 @@ func CalculatePriority(severity int) (priority int) {
 
 func (sm *syslogMessage) SetupClient() (net.Conn, error) {
 
-	conn, err := net.Dial(sm.network, sm.addressPort)
+	conn, err := net.Dial(sm.protocol, sm.addressPort)
 	if err != nil {
 		return nil, err
 	}

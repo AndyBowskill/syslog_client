@@ -4,12 +4,60 @@ import (
 	"testing"
 )
 
+func TestSetupProtocolValidArgs(t *testing.T) {
+
+	var tests = []struct {
+		protocol      string
+		validProtocol string
+	}{
+		{"udp", udp},
+		{"tcp", tcp},
+	}
+
+	for _, tt := range tests {
+
+		protocol := SetupProtocol(tt.protocol)
+		if protocol != tt.validProtocol {
+			t.Errorf("SetupProtocol function with a %s didn't return with %s", tt.protocol, tt.validProtocol)
+		}
+	}
+}
+
+func TestSetupProtocolInvalidArgs(t *testing.T) {
+
+	var tests = []struct {
+		protocol      string
+		validProtocol string
+	}{
+		{"", udp},
+		{"123 Test", udp},
+	}
+
+	for _, tt := range tests {
+
+		protocol := SetupProtocol(tt.protocol)
+		if protocol != tt.validProtocol {
+			t.Errorf("SetupProtocol function with a %s didn't return with %s", tt.protocol, tt.validProtocol)
+		}
+	}
+}
+
 func TestAddressPortValidArgs(t *testing.T) {
 
-	validAddressPort := "172.16.20.3:514"
-	addressPort := AddressPort("172.16.20.3")
-	if addressPort != validAddressPort {
-		t.Errorf("AddressPort function with a valid adddress didn't return with valid addess and port")
+	var tests = []struct {
+		address          string
+		validAddressPort string
+	}{
+		{"172.16.20.3", "172.16.20.3:514"},
+		{"", ":514"},
+	}
+
+	for _, tt := range tests {
+
+		addressPort := SetupAddressPort(tt.address)
+		if addressPort != tt.validAddressPort {
+			t.Errorf("AddressPort function with a valid %s didn't return with valid %s", tt.address, tt.validAddressPort)
+		}
 	}
 }
 
@@ -17,7 +65,7 @@ func TestCalculatePriotyValidArgs(t *testing.T) {
 
 	priority := CalculatePriority(3)
 	if priority != 11 {
-		t.Errorf("CaulatePriority function with severity of 3 didn't return priority of 11.")
+		t.Errorf("CalculatePriority function with severity of 3 didn't return priority of 11 (user error).")
 	}
 }
 
@@ -25,7 +73,7 @@ func TestCalculatePriotyInvalidArgs(t *testing.T) {
 
 	priority := CalculatePriority(20)
 	if priority != 15 {
-		t.Errorf("CaulatePriority function with severity of 20 didn't return priority of 15 (user debug).")
+		t.Errorf("CalculatePriority function with severity of 20 didn't return priority of 15 (user debug).")
 	}
 }
 
