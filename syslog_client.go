@@ -24,7 +24,7 @@ func newSyslogMessage(protocol, addressPort string, priority int, message string
 
 func main() {
 
-	protocolPtr := flag.String("protocol", udp, "syslog server protocol udp or tcp")
+	protocolPtr := flag.String("protocol", udp, "syslog server protocol, udp or tcp")
 	addressPtr := flag.String("address", "", "syslog server IP address")
 	severityPtr := flag.Int("severity", 5, "syslog message severity")
 	messagePtr := flag.String("message", "Testing, testing, 1, 2, 3", "syslog message")
