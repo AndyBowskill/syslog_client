@@ -1,6 +1,6 @@
 ## Syslog Client
 
-![Go build and test]https://github.com/andybowskill/syslog_client/actions/workflows/go.yml (https://github.com/andybowskill/syslog_client/actions/workflows/go.yml/badge.svg)
+[![Go build and test](https://github.com/andybowskill/syslog_client/actions/workflows/go.yml/badge.svg)](https://github.com/andybowskill/syslog_client/actions/workflows/go.yml)
 
 A simple command line tool to check the syslog server is running by sending syslogs to it.
 
