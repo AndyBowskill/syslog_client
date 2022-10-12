@@ -1,13 +1,15 @@
 ## Syslog Client
 
+![Go build and test]https://github.com/andybowskill/syslog_client/actions/workflows/go.yml (https://github.com/andybowskill/syslog_client/actions/workflows/go.yml/badge.svg)
+
 A simple command line tool to check the syslog server is running by sending syslogs to it.
 
 Acceptable command line flags are:
 
-* protocol - Syslog server protocol, udp or tcp. Defaults to "udp".
-* address - Syslog server address IPv4 address. Defaults to "".
-* severity - Syslog message severity. Defaults to 5, (Notice).
-* message - Syslog message. Defaults to "Testing, testing, 1, 2, 3".
+* `protocol` - Syslog server protocol, udp or tcp. Defaults to "udp".
+* `address` - Syslog server address IPv4 address. Defaults to "".
+* `severity` - Syslog message severity. Defaults to 5, (Notice).
+* `message` - Syslog message. Defaults to "Testing, testing, 1, 2, 3".
 
 ### Example
 ```
