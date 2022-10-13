@@ -1,4 +1,4 @@
-package syslog_client
+package main
 
 import (
 	"testing"
