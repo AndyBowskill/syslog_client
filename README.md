@@ -7,18 +7,23 @@ A simple command line tool to check the syslog server is running by sending sysl
 
 Acceptable command line flags are:
 
-* `p` - Syslog server protocol, udp or tcp. Defaults to "udp".
-* `a` - Syslog server address IPv4 address. Defaults to "".
-* `s` - Syslog message severity. Defaults to 5, (Notice).
-* `m` - Syslog message. Defaults to "Testing, testing, 1, 2, 3".
+| Flag | Description                                              |
+|:-----|:---------------------------------------------------------|
+| -p   | Syslog server protocol, udp or tcp. Defaults to "udp".   |
+| -a   | Syslog server IPv4 address. Defaults to "".              |
+| -s   | Syslog message severity. Defaults to 5, (Notice).        |
+| -m   | Syslog message. Defaults to "Testing, testing, 1, 2, 3". |
+
+### Install
+
+```
+$ go install github.com/AndyBowskill/syslog_client@latest
+```
 
 ### Example
 ```
-syslog-client>go run ./ -p="udp" -a="172.16.30.2" -s=0 -m="Testing the syslog server by sending alert message."
+$ syslog_client -a="192.168.48.10" -m="Syslog message from Fedora" -s=4
 ```
 ```
-syslog-client>go run ./ -a="192.168.10.1" -m="Testing the syslog server by sending notice message."
-```
-```
-syslog-client>go run ./ -p="tcp" -a="10.0.0.2" -s=1
+$ syslog_client -p="tcp" -s=3 -a="192.168.48.10" -m="Syslog message from Ubuntu"
 ```
