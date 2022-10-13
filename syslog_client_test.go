@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	"github.com/andybowskill/syslog_client/message"
 )
 
 func TestSetupProtocolValidArgs(t *testing.T) {
@@ -10,8 +12,8 @@ func TestSetupProtocolValidArgs(t *testing.T) {
 		protocol      string
 		validProtocol string
 	}{
-		{"udp", udp},
-		{"tcp", tcp},
+		{"udp", message.UDP},
+		{"tcp", message.TCP},
 	}
 
 	for _, tt := range tests {
@@ -29,8 +31,8 @@ func TestSetupProtocolInvalidArgs(t *testing.T) {
 		protocol      string
 		validProtocol string
 	}{
-		{"", udp},
-		{"123 Test", udp},
+		{"", message.UDP},
+		{"123 Test", message.UDP},
 	}
 
 	for _, tt := range tests {
@@ -79,9 +81,9 @@ func TestCalculatePriotyInvalidArgs(t *testing.T) {
 
 func TestSetupClientValidArgs(t *testing.T) {
 
-	sm := newSyslogMessage("udp", "192.168.48.10:514", 0, "")
+	syslogMessage := message.NewSyslogMessage("udp", "192.168.48.10:514", 0, "")
 
-	conn, err := sm.SetupClient()
+	conn, err := SetupClient(syslogMessage)
 	defer CloseClient(conn)
 	if err != nil {
 		t.Errorf("SetupClient function didn't error with valid args.")
@@ -90,9 +92,9 @@ func TestSetupClientValidArgs(t *testing.T) {
 
 func TestSetupClientUnknownAddress(t *testing.T) {
 
-	sm := newSyslogMessage("udp", ":514", 0, "")
+	syslogMessage := message.NewSyslogMessage("udp", ":514", 0, "")
 
-	conn, err := sm.SetupClient()
+	conn, err := SetupClient(syslogMessage)
 	defer CloseClient(conn)
 	if err != nil {
 		t.Errorf("SetupClient function didn't error with unknown address.")
@@ -101,11 +103,11 @@ func TestSetupClientUnknownAddress(t *testing.T) {
 
 func TestSendValidArgs(t *testing.T) {
 
-	sm := newSyslogMessage("udp", "192.168.48.10:514", 3, "Testing")
+	syslogMessage := message.NewSyslogMessage("udp", "192.168.48.10:514", 3, "Testing")
 
-	conn, _ := sm.SetupClient()
+	conn, _ := SetupClient(syslogMessage)
 	defer CloseClient(conn)
-	err := sm.Send(conn)
+	err := Send(syslogMessage, conn)
 	if err != nil {
 		t.Errorf("Send function didn't error with valid args.")
 	}
