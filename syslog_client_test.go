@@ -1,9 +1,9 @@
-package main
+package syslog_client
 
 import (
 	"testing"
 
-	"github.com/andybowskill/syslog_client/message"
+	"github.com/AndyBowskill/syslog_client/message"
 )
 
 func TestSetupProtocolValidArgs(t *testing.T) {

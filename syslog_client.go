@@ -1,4 +1,4 @@
-package main
+package syslog_client
 
 import (
 	"flag"
@@ -6,7 +6,7 @@ import (
 	"net"
 	"strings"
 
-	"github.com/andybowskill/syslog_client/message"
+	"github.com/AndyBowskill/syslog_client/message"
 )
 
 func main() {
