@@ -81,9 +81,9 @@ func TestCalculatePriotyInvalidArgs(t *testing.T) {
 
 func TestSetupClientValidArgs(t *testing.T) {
 
-	syslogMessage := message.NewSyslogMessage("udp", "192.168.48.10:514", 0, "")
+	sm := message.NewSyslogMessage("udp", "192.168.48.10:514", "", 0)
 
-	conn, err := SetupClient(syslogMessage)
+	conn, err := SetupClient(sm)
 	defer CloseClient(conn)
 	if err != nil {
 		t.Errorf("SetupClient function didn't error with valid args.")
@@ -92,9 +92,9 @@ func TestSetupClientValidArgs(t *testing.T) {
 
 func TestSetupClientUnknownAddress(t *testing.T) {
 
-	syslogMessage := message.NewSyslogMessage("udp", ":514", 0, "")
+	sm := message.NewSyslogMessage("udp", ":514", "", 0)
 
-	conn, err := SetupClient(syslogMessage)
+	conn, err := SetupClient(sm)
 	defer CloseClient(conn)
 	if err != nil {
 		t.Errorf("SetupClient function didn't error with unknown address.")
@@ -103,11 +103,11 @@ func TestSetupClientUnknownAddress(t *testing.T) {
 
 func TestSendValidArgs(t *testing.T) {
 
-	syslogMessage := message.NewSyslogMessage("udp", "192.168.48.10:514", 3, "Testing")
+	sm := message.NewSyslogMessage("udp", "192.168.48.10:514", "Testing", 3)
 
-	conn, _ := SetupClient(syslogMessage)
+	conn, _ := SetupClient(sm)
 	defer CloseClient(conn)
-	err := Send(syslogMessage, conn)
+	err := Send(sm, conn)
 	if err != nil {
 		t.Errorf("Send function didn't error with valid args.")
 	}

@@ -21,12 +21,12 @@ func main() {
 	addressPort := SetupAddressPort(*addressPtr)
 	priority := CalculatePriority(*severityPtr)
 
-	syslogMessage := message.NewSyslogMessage(protocol, addressPort, priority, *messagePtr)
+	sm := message.NewSyslogMessage(protocol, addressPort, *messagePtr, priority)
 
-	conn, err := SetupClient(syslogMessage)
+	conn, err := SetupClient(sm)
 	defer CloseClient(conn)
 	if err == nil {
-		Send(syslogMessage, conn)
+		Send(sm, conn)
 	}
 }
 
