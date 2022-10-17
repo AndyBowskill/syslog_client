@@ -32,11 +32,13 @@ func main() {
 
 func SetupProtocol(protocol string) (validProtocol string) {
 
-	if strings.Compare(protocol, message.TCP) != 0 && strings.Compare(protocol, message.UDP) != 0 {
+	lowerProtocol := strings.ToLower(protocol)
+
+	if strings.Compare(lowerProtocol, message.TCP) != 0 && strings.Compare(lowerProtocol, message.UDP) != 0 {
 		return message.UDP
 	}
 
-	return protocol
+	return lowerProtocol
 }
 
 func SetupAddressPort(address string) (addressPort string) {
