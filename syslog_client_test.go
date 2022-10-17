@@ -13,6 +13,7 @@ func TestSetupProtocolValidArgs(t *testing.T) {
 		validProtocol string
 	}{
 		{"udp", message.UDP},
+		{"UDP", message.UDP},
 		{"tcp", message.TCP},
 	}
 
