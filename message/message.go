@@ -7,10 +7,10 @@ type SyslogMessage struct {
 	Protocol    string
 	AddressPort string
 	Message     string
-	Priority    int
+	Priority    uint8
 }
 
-func NewSyslogMessage(protocol, addressPort, message string, priority int) *SyslogMessage {
+func NewSyslogMessage(protocol, addressPort, message string, priority uint8) *SyslogMessage {
 	syslogMessage := SyslogMessage{Protocol: protocol, AddressPort: addressPort, Message: message, Priority: priority}
 	return &syslogMessage
 }

@@ -13,13 +13,13 @@ func main() {
 
 	protocolPtr := flag.String("p", message.UDP, "syslog server protocol, udp or tcp")
 	addressPtr := flag.String("a", "", "syslog server IP address")
-	severityPtr := flag.Int("s", 5, "syslog message severity")
+	severityPtr := flag.Uint("s", 5, "syslog message severity")
 	messagePtr := flag.String("m", "Testing, testing, 1, 2, 3", "syslog message")
 	flag.Parse()
 
 	protocol := setupProtocol(*protocolPtr)
 	addressPort := setupAddressPort(*addressPtr)
-	priority := calculatePriority(*severityPtr)
+	priority := calculatePriority(uint8(*severityPtr))
 
 	sm := message.NewSyslogMessage(protocol, addressPort, *messagePtr, priority)
 
@@ -45,13 +45,13 @@ func setupAddressPort(address string) string {
 	return fmt.Sprintf("%s:514", address)
 }
 
-func calculatePriority(severity int) int {
+func calculatePriority(severity uint8) uint8 {
 
 	if severity > 7 {
 		severity = 7
 	}
 
-	//Priority is user-level facility (1), add 8, then multplied by the severity
+	//Priority is user-level facility, which is 1, multiplied by 8, then add the severity value
 	return (8 + severity)
 }
 
