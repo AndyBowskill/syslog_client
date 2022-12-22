@@ -20,7 +20,6 @@ func Test_setupProtocol(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		protocol := setupProtocol(tt.protocol)
 		if protocol != tt.validProtocol {
 			t.Errorf("setupProtocol function with a %s didn't return with %s", tt.protocol, tt.validProtocol)
@@ -39,7 +38,6 @@ func Test_setupAddressPort(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		addressPort := setupAddressPort(tt.address)
 		if addressPort != tt.validAddressPort {
 			t.Errorf("addressPort function with a valid %s didn't return with valid %s", tt.address, tt.validAddressPort)
@@ -59,12 +57,10 @@ func Test_calculatePrioty(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		priority := calculatePriority(tt.severity)
 		if priority != tt.validPriority {
-			t.Errorf("calculatePriority function with severity of %d didn't return priority of %d", tt.severity, tt.validPriority)
+			t.Errorf("calculatePriority function with a %d severity didn't return with %d priority", tt.severity, tt.validPriority)
 		}
-
 	}
 }
 

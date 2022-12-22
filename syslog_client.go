@@ -54,9 +54,8 @@ func calculatePriority(severity uint) (priority uint) {
 		severity = 7
 	}
 
-	//Priority is user-level facility (1), add 8, then multplied by the severity
-	priority = (8 + severity)
-	return priority
+	//Priority is user-level facility, which is 1, multiplied by 8, then add the severity value
+	return (8 + severity)
 }
 
 func setupClient(sm *message.SyslogMessage) (net.Conn, error) {
