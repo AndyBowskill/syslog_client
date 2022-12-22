@@ -6,7 +6,7 @@ import (
 	"github.com/AndyBowskill/syslog_client/message"
 )
 
-func TestSetupProtocolValidArgs(t *testing.T) {
+func Test_setupProtocol(t *testing.T) {
 
 	var tests = []struct {
 		protocol      string
@@ -15,37 +15,20 @@ func TestSetupProtocolValidArgs(t *testing.T) {
 		{"udp", message.UDP},
 		{"UDP", message.UDP},
 		{"tcp", message.TCP},
-	}
-
-	for _, tt := range tests {
-
-		protocol := SetupProtocol(tt.protocol)
-		if protocol != tt.validProtocol {
-			t.Errorf("SetupProtocol function with a %s didn't return with %s", tt.protocol, tt.validProtocol)
-		}
-	}
-}
-
-func TestSetupProtocolInvalidArgs(t *testing.T) {
-
-	var tests = []struct {
-		protocol      string
-		validProtocol string
-	}{
 		{"", message.UDP},
 		{"123 Test", message.UDP},
 	}
 
 	for _, tt := range tests {
 
-		protocol := SetupProtocol(tt.protocol)
+		protocol := setupProtocol(tt.protocol)
 		if protocol != tt.validProtocol {
-			t.Errorf("SetupProtocol function with a %s didn't return with %s", tt.protocol, tt.validProtocol)
+			t.Errorf("setupProtocol function with a %s didn't return with %s", tt.protocol, tt.validProtocol)
 		}
 	}
 }
 
-func TestAddressPortValidArgs(t *testing.T) {
+func Test_setupAddressPort(t *testing.T) {
 
 	var tests = []struct {
 		address          string
@@ -57,59 +40,83 @@ func TestAddressPortValidArgs(t *testing.T) {
 
 	for _, tt := range tests {
 
-		addressPort := SetupAddressPort(tt.address)
+		addressPort := setupAddressPort(tt.address)
 		if addressPort != tt.validAddressPort {
-			t.Errorf("AddressPort function with a valid %s didn't return with valid %s", tt.address, tt.validAddressPort)
+			t.Errorf("addressPort function with a valid %s didn't return with valid %s", tt.address, tt.validAddressPort)
 		}
 	}
 }
 
-func TestCalculatePriotyValidArgs(t *testing.T) {
+func Test_calculatePrioty(t *testing.T) {
 
-	priority := CalculatePriority(3)
-	if priority != 11 {
-		t.Errorf("CalculatePriority function with severity of 3 didn't return priority of 11 (user error).")
+	var tests = []struct {
+		severity      uint
+		validPriority uint
+	}{
+		{3, 11},
+		{20, 15},
+		{0, 8},
+	}
+
+	for _, tt := range tests {
+
+		priority := calculatePriority(tt.severity)
+		if priority != tt.validPriority {
+			t.Errorf("calculatePriority function with severity of %d didn't return priority of %d", tt.severity, tt.validPriority)
+		}
+
 	}
 }
 
-func TestCalculatePriotyInvalidArgs(t *testing.T) {
-
-	priority := CalculatePriority(20)
-	if priority != 15 {
-		t.Errorf("CalculatePriority function with severity of 20 didn't return priority of 15 (user debug).")
-	}
-}
-
-func TestSetupClientValidArgs(t *testing.T) {
+func Test_setupClientValidArgs(t *testing.T) {
 
 	sm := message.NewSyslogMessage("udp", "192.168.48.10:514", "", 0)
 
-	conn, err := SetupClient(sm)
-	defer CloseClient(conn)
+	conn, err := setupClient(sm)
+	defer closeClient(conn)
 	if err != nil {
-		t.Errorf("SetupClient function didn't error with valid args.")
+		t.Errorf("setupClient function did error with valid args.")
 	}
 }
 
-func TestSetupClientUnknownAddress(t *testing.T) {
+func Test_setupClientUnknownAddress(t *testing.T) {
 
 	sm := message.NewSyslogMessage("udp", ":514", "", 0)
 
-	conn, err := SetupClient(sm)
-	defer CloseClient(conn)
+	conn, err := setupClient(sm)
+	defer closeClient(conn)
 	if err != nil {
-		t.Errorf("SetupClient function didn't error with unknown address.")
+		t.Errorf("setupClient function didn't error with unknown address.")
 	}
 }
 
-func TestSendValidArgs(t *testing.T) {
+func Test_setupClientInvalidArgs(t *testing.T) {
 
-	sm := message.NewSyslogMessage("udp", "192.168.48.10:514", "Testing", 3)
+	sm := message.NewSyslogMessage("", "", "", 0)
 
-	conn, _ := SetupClient(sm)
-	defer CloseClient(conn)
-	err := Send(sm, conn)
+	_, err := setupClient(sm)
+	if err == nil {
+		t.Errorf("setupClient function didn't error with invalid args.")
+	}
+}
+
+type TestWriter struct {
+}
+
+func (tw TestWriter) Write(p []byte) (n int, err error) {
+	n = 19
+	err = nil
+	return n, err
+}
+
+func Test_send(t *testing.T) {
+
+	tw := TestWriter{}
+
+	sm := message.NewSyslogMessage("udp", "192.168.48.10:514", "Error - Testing", 3)
+
+	err := send(sm, tw)
 	if err != nil {
-		t.Errorf("Send function didn't error with valid args.")
+		t.Errorf("send function did error with valid args.")
 	}
 }
